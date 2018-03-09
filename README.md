@@ -1,7 +1,16 @@
 Navigation Drawer Sample
 ===========
 
-'Navigation Drawer' sample, see [the website](http://www.icit.com/android/samples)
+'Navigation Drawer' sample, see [the website](http://www.icit.com/android/samples) (deprecated)
+
+Release Notes
+--------
+
+    >> v1.0.1
+    - Add NestedScrollView in content layout
+
+    >> v1.0.0
+    - Generated NavigationDrawer sample by Android Studio.
 
 License
 --------
