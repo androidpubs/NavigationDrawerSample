@@ -7,4 +7,15 @@
     <dimen name="app_bar_height">180dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+
+    <!-- Flexible Space -->
+    <dimen name="margin_standard">16dp</dimen>
+
+    <dimen name="flexible_space_height">72dp</dimen>
+    <dimen name="flexible_space_image_offset">0dp</dimen>
+    <dimen name="flexible_space_image_height">240dp</dimen>
+    <dimen name="flexible_space_show_fab_offset">120dp</dimen>
+
+    <dimen name="title_text_size">24sp</dimen>
+    <dimen name="tab_height">48dp</dimen>
 </resources>

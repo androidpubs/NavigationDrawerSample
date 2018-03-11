@@ -2,9 +2,14 @@ Navigation Drawer Sample
 ===========
 
 'Navigation Drawer' sample, see [the website](http://www.icit.com/android/samples) (deprecated)
+This application is constructed using [Android-ObservableScrollView](https://github.com/ksoichiro/Android-ObservableScrollView)
 
 Release Notes
 --------
+
+    >> v1.0.2
+    - Add LibAOSV(Android-ObservableScrollView)
+    - Apply flexible action bar, recycler view, listview and viewpager
 
     >> v1.0.1
     - Add NestedScrollView in content layout
