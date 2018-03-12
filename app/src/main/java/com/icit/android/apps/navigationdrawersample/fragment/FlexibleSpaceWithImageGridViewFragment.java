@@ -48,6 +48,9 @@ public class FlexibleSpaceWithImageGridViewFragment extends FlexibleSpaceWithIma
 
         gridView.addHeaderView(paddingView);
         setDummyData(gridView);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            gridView.setNestedScrollingEnabled(true);
+        }
         // TouchInterceptionViewGroup should be a parent view other than ViewPager.
         // This is a workaround for the issue #117:
         // https://github.com/ksoichiro/Android-ObservableScrollView/issues/117

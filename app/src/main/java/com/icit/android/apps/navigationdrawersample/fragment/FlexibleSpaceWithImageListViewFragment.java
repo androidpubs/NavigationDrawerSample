@@ -17,6 +17,7 @@
 package com.icit.android.apps.navigationdrawersample.fragment;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,9 @@ public class FlexibleSpaceWithImageListViewFragment extends FlexibleSpaceWithIma
 
         listView.addHeaderView(paddingView);
         setDummyData(listView);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            listView.setNestedScrollingEnabled(true);
+        }
         // TouchInterceptionViewGroup should be a parent view other than ViewPager.
         // This is a workaround for the issue #117:
         // https://github.com/ksoichiro/Android-ObservableScrollView/issues/117
