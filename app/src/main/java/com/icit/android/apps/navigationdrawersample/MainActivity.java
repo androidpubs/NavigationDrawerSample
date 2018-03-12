@@ -73,6 +73,10 @@ public class MainActivity extends BaseActivity
             mSlidingTabLayout.setDistributeEvenly(true);
             mSlidingTabLayout.setViewPager(mPager);
         }
+
+//        // App Bar
+//        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+//        appBarLayout.setMinimumHeight(mSlidingTabLayout.getHeight() << 1);
     }
 
     @Override
@@ -104,6 +108,20 @@ public class MainActivity extends BaseActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    public void onConfigurationChanged(Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        if (toolbar != null) {
+//            int size = UIUtils.calculateActionBarSize(this);
+//            toolbar.setTitleMarginBottom(mSlidingTabLayout.getHeight() << 1);
+//            toolbar.setMinimumHeight(mSlidingTabLayout.getHeight());
+//            ViewGroup.LayoutParams lp = toolbar.getLayoutParams();
+//            lp.height = size;
+//            toolbar.setLayoutParams(lp);
+//        }
+//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
