@@ -7,6 +7,9 @@ This application is constructed using [Android-ObservableScrollView](https://git
 Release Notes
 --------
 
+    >> v1.0.4
+    - Add LibTabStrip and various features for it
+
     >> v1.0.3
     - Add BottomNavigationView
 
