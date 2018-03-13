@@ -1,6 +1,8 @@
 package com.icit.android.apps.navigationdrawersample;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -25,10 +27,15 @@ import com.icit.android.apps.navigationdrawersample.fragment.FlexibleSpaceWithIm
 import com.icit.android.apps.navigationdrawersample.fragment.FlexibleSpaceWithImageScrollViewFragment;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
 
+    // DrawerLayout
     private DrawerLayout drawer;
+    // FlexibleSpace or Normal
     private boolean isFlexibleSpace = true;
+    // BottomNavigationView
+    BottomNavigationView bottomNavigationView;
+    private MenuItem prevBottomNavigation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,18 +69,39 @@ public class MainActivity extends BaseActivity
 
         if(isFlexibleSpace) {
             // Pager Adapter
-            mPagerAdapter = new NavigationAdapter(getSupportFragmentManager());
-            mPager = (ViewPager) findViewById(R.id.pager);
-            mPager.setAdapter(mPagerAdapter);
+            mPagerAdapter = new NestedScrollingPagerAdapter(getSupportFragmentManager());
+            mViewPager = (ViewPager) findViewById(R.id.view_pager);
+            mViewPager.setAdapter(mPagerAdapter);
+            mViewPager.addOnPageChangeListener(this);
 
             // Sliding Tab Layout
             mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
             mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
             mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.accent));
             mSlidingTabLayout.setDistributeEvenly(true);
-            mSlidingTabLayout.setViewPager(mPager);
+            mSlidingTabLayout.setViewPager(mViewPager);
         }
 
+        // BottomNavigationView
+        bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation_view);
+        prevBottomNavigation = bottomNavigationView.getMenu().getItem(0);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_one:
+                        mViewPager.setCurrentItem(0);
+                        return true;
+                    case R.id.action_two:
+                        mViewPager.setCurrentItem(1);
+                        return true;
+                    case R.id.action_three:
+                        mViewPager.setCurrentItem(2);
+                        return true;
+                }
+                return false;
+            }
+        });
 //        // App Bar
 //        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
 //        appBarLayout.setMinimumHeight(mSlidingTabLayout.getHeight() << 1);
@@ -123,6 +151,9 @@ public class MainActivity extends BaseActivity
 //        }
 //    }
 
+    /**
+     * NavigationView.OnNavigationItemSelectedListener
+     */
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -149,24 +180,52 @@ public class MainActivity extends BaseActivity
     }
 
     /**
-     * Apply flexible layout
+     * ViewPager.OnPageChangeListener
      */
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-    protected static final float MAX_TEXT_SCALE_DELTA = 0.3f;
+    }
 
-    private ViewPager mPager;
-    private NavigationAdapter mPagerAdapter;
+    @Override
+    public void onPageSelected(int position) {
+        int bottomNavigationViewSize = bottomNavigationView.getMenu().size();
+        if(position >= bottomNavigationViewSize) {
+            bottomNavigationView.setVisibility(View.GONE);
+        }
+        else {
+            bottomNavigationView.setVisibility(View.VISIBLE);
+            if (prevBottomNavigation != null) {
+                prevBottomNavigation.setChecked(false);
+            }
+            prevBottomNavigation = bottomNavigationView.getMenu().getItem(position % bottomNavigationViewSize);
+            prevBottomNavigation.setChecked(true);
+        }
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+
+    }
+
+    /**
+     * Apply flexible space
+     */
+//    protected static final float MAX_TEXT_SCALE_DELTA = 0.3f;
+
+    private ViewPager mViewPager;
+    private NestedScrollingPagerAdapter mPagerAdapter;
     private SlidingTabLayout mSlidingTabLayout;
 
     /**
      * This adapter provides three types of fragments as an example.
      * {@linkplain #createItem(int)} should be modified if you use this example for your app.
      */
-    private static class NavigationAdapter extends CacheFragmentStatePagerAdapter {
+    private static class NestedScrollingPagerAdapter extends CacheFragmentStatePagerAdapter {
 
         private static final String[] TITLES = new String[]{"Applepie", "Butter Cookie", "Cupcake", "Donut", "Eclair", "Froyo", "Gingerbread", "Honeycomb", "Ice Cream Sandwich", "Jelly Bean", "KitKat", "Lollipop"};
 
-        public NavigationAdapter(FragmentManager fm) {
+        public NestedScrollingPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

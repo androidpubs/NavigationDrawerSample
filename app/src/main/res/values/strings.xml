@@ -95,4 +95,8 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <!-- Bottom Navigation View -->
+    <string name="selection_home">HOME</string>
+    <string name="selection_daily_box_office">Daily BoxOffice</string>
+    <string name="selection_weekly_box_office">Weekly BoxOffice</string>
 </resources>

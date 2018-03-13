@@ -7,6 +7,9 @@ This application is constructed using [Android-ObservableScrollView](https://git
 Release Notes
 --------
 
+    >> v1.0.3
+    - Add BottomNavigationView
+
     >> v1.0.2
     - Add LibAOSV(Android-ObservableScrollView)
     - Apply flexible action bar, recycler view, listview and viewpager

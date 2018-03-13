@@ -6,4 +6,6 @@
 
     <!-- Flexible Space -->
     <color name="accent">#eeff41</color>
+    <!-- Bottom Navigation View -->
+    <color name="navigation_item_color">#51032d</color>
 </resources>
