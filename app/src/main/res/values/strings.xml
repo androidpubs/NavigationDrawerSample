@@ -99,4 +99,6 @@
     <string name="selection_home">HOME</string>
     <string name="selection_daily_box_office">Daily BoxOffice</string>
     <string name="selection_weekly_box_office">Weekly BoxOffice</string>
+    <!-- Options Menu -->
+    <string name="action_contact">Contact</string>
 </resources>

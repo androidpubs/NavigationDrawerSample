@@ -8,4 +8,6 @@
     <color name="accent">#eeff41</color>
     <!-- Bottom Navigation View -->
     <color name="navigation_item_color">#51032d</color>
+    <!-- DialogFragment -->
+    <color name="background_window">#FFE5E5E5</color>
 </resources>

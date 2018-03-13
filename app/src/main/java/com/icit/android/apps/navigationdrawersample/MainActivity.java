@@ -1,6 +1,9 @@
 package com.icit.android.apps.navigationdrawersample;
 
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
@@ -17,25 +20,34 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.astuetz.PagerSlidingTabStrip;
 import com.github.ksoichiro.android.observablescrollview.CacheFragmentStatePagerAdapter;
 import com.google.samples.apps.iosched.ui.widget.SlidingTabLayout;
 import com.icit.android.apps.navigationdrawersample.base.BaseActivity;
 import com.icit.android.apps.navigationdrawersample.base.FlexibleSpaceWithImageBaseFragment;
+import com.icit.android.apps.navigationdrawersample.dialog.ColorPickerDialog;
 import com.icit.android.apps.navigationdrawersample.fragment.FlexibleSpaceWithImageGridViewFragment;
 import com.icit.android.apps.navigationdrawersample.fragment.FlexibleSpaceWithImageListViewFragment;
 import com.icit.android.apps.navigationdrawersample.fragment.FlexibleSpaceWithImageRecyclerViewFragment;
 import com.icit.android.apps.navigationdrawersample.fragment.FlexibleSpaceWithImageScrollViewFragment;
+import com.icit.android.apps.navigationdrawersample.fragment.QuickContactFragment;
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener {
+        implements NavigationView.OnNavigationItemSelectedListener, ViewPager.OnPageChangeListener, ColorPickerDialog.OnColorChangedListener {
 
     // DrawerLayout
     private DrawerLayout drawer;
     // FlexibleSpace or Normal
     private boolean isFlexibleSpace = true;
+    private boolean isLibTabStrip = true;
     // BottomNavigationView
     BottomNavigationView bottomNavigationView;
     private MenuItem prevBottomNavigation;
+    // TabLayout
+    private View mSlidingTabLayout;
+    private Drawable oldBackground = null;
+    private int currentColor = 0xFF666666;
+    private final Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +87,18 @@ public class MainActivity extends BaseActivity
             mViewPager.addOnPageChangeListener(this);
 
             // Sliding Tab Layout
-            mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
-            mSlidingTabLayout.setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
-            mSlidingTabLayout.setSelectedIndicatorColors(getResources().getColor(R.color.accent));
-            mSlidingTabLayout.setDistributeEvenly(true);
-            mSlidingTabLayout.setViewPager(mViewPager);
+            if(isLibTabStrip) {
+                mSlidingTabLayout = (PagerSlidingTabStrip) findViewById(R.id.sliding_tabs);
+                ((PagerSlidingTabStrip)mSlidingTabLayout).setViewPager(mViewPager);
+                currentColor = changeColor(currentColor);
+            }
+            else {
+                mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.sliding_tabs);
+                ((SlidingTabLayout)mSlidingTabLayout).setCustomTabView(R.layout.tab_indicator, android.R.id.text1);
+                ((SlidingTabLayout)mSlidingTabLayout).setSelectedIndicatorColors(getResources().getColor(R.color.accent));
+                ((SlidingTabLayout)mSlidingTabLayout).setDistributeEvenly(true);
+                ((SlidingTabLayout)mSlidingTabLayout).setViewPager(mViewPager);
+            }
         }
 
         // BottomNavigationView
@@ -116,6 +135,19 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("currentColor", currentColor);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        currentColor = savedInstanceState.getInt("currentColor");
+        currentColor = changeColor(currentColor);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
@@ -124,19 +156,24 @@ public class MainActivity extends BaseActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.action_contact:
+                QuickContactFragment dialog = new QuickContactFragment();
+                dialog.show(getSupportFragmentManager(), "QuickContactFragment");
+                return true;
+            case  R.id.action_settings:
+                new ColorPickerDialog(this, this, currentColor).show();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void colorChanged(int newColor) {
+        currentColor = changeColor(newColor);
+    }
 //    @Override
 //    public void onConfigurationChanged(Configuration newConfig) {
 //        super.onConfigurationChanged(newConfig);
@@ -215,7 +252,6 @@ public class MainActivity extends BaseActivity
 
     private ViewPager mViewPager;
     private NestedScrollingPagerAdapter mPagerAdapter;
-    private SlidingTabLayout mSlidingTabLayout;
 
     /**
      * This adapter provides three types of fragments as an example.
@@ -266,4 +302,74 @@ public class MainActivity extends BaseActivity
             return TITLES[position];
         }
     }
+
+    /**
+     * TabLayout
+     */
+
+
+    private int changeColor(int newColor) {
+
+        ((PagerSlidingTabStrip)mSlidingTabLayout).setIndicatorColor(newColor);
+
+        // change ActionBar color just if an ActionBar is available
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//
+//            Drawable colorDrawable = new ColorDrawable(newColor);
+//            Drawable bottomDrawable = getResources().getDrawable(R.drawable.actionbar_bottom);
+//            LayerDrawable ld = new LayerDrawable(new Drawable[] { colorDrawable, bottomDrawable });
+//
+//            if (oldBackground == null) {
+//
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//                    ld.setCallback(drawableCallback);
+//                } else {
+//                    getSupportActionBar().setBackgroundDrawable(ld);
+//                }
+//            } else {
+//                TransitionDrawable td = new TransitionDrawable(new Drawable[] { oldBackground, ld });
+//
+//                // workaround for broken ActionBarContainer drawable handling on
+//                // pre-API 17 builds
+//                // https://github.com/android/platform_frameworks_base/commit/a7cc06d82e45918c37429a59b14545c6a57db4e4
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//                    td.setCallback(drawableCallback);
+//                } else {
+//                    getActionBar().setBackgroundDrawable(td);
+//                }
+//
+//                td.startTransition(200);
+//            }
+//
+//            oldBackground = ld;
+//
+//            // http://stackoverflow.com/questions/11002691/actionbar-setbackgrounddrawable-nulling-background-from-thread-handler
+//            getSupportActionBar().setDisplayShowTitleEnabled(false);
+//            getSupportActionBar().setDisplayShowTitleEnabled(true);
+//        }
+
+        //currentColor = newColor;
+        return newColor;
+    }
+
+    private Drawable.Callback drawableCallback = new Drawable.Callback() {
+        @Override
+        public void invalidateDrawable(Drawable who) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                who.setCallback(drawableCallback);
+            } else {
+                getActionBar().setBackgroundDrawable(who);
+            }
+        }
+
+        @Override
+        public void scheduleDrawable(Drawable who, Runnable what, long when) {
+            handler.postAtTime(what, when);
+        }
+
+        @Override
+        public void unscheduleDrawable(Drawable who, Runnable what) {
+            handler.removeCallbacks(what);
+        }
+    };
 }
